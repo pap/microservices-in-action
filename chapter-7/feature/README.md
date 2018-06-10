@@ -13,7 +13,7 @@ docker-compose up --build
 
 ```
 # pass a uuid on the POST request
-curl -X POST -d '{"uuid": "65c2da7e-70e4-4195-a7e8-86e23d019161"}' http://localhost:5001/shares/sell
+curl -X POST http://localhost:5001/shares/sell
 
 ```
 
