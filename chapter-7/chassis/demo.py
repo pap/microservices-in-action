@@ -27,7 +27,7 @@ class DemoChassisService:
     @http('GET', '/error')
     @circuit(failure_threshold=5, expected_exception=ZeroDivisionError)
     @statsd.timer('http_error')
-    def error_http_request(self):
+    def error_http_request(self, _request):
         return json.dumps({1 / 0})
 
 
