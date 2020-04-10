@@ -1,0 +1,58 @@
+version: '3'
+services:
+  demo:
+    build:
+      context: .
+      args:
+        filename: "demo.py"
+    command: [ "nameko", "run", "--config", "config.yml", "demo" ]
+    ports:
+      - "8000:8000"
+  http-demo:
+    build:
+      context: .
+      args:
+        filename: "http_demo.py"
+    command: [ "nameko", "run", "--config", "config.yml", "http_demo" ]
+    ports:
+      - "8001:8000"
+  events-demo:
+    build:
+      context: .
+      args:
+        filename: "events_demo.py"
+    restart: always
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq:chassis-eventbus
+    environment:
+      RABBIT_PASSWORD: "guest"
+      RABBIT_USER: "guest"
+      RABBIT_HOST: "rabbitmq"
+      RABBIT_PORT: "5672"
+      RABBIT_MANAGEMENT_PORT: "15672"
+    command: [ "nameko", "run", "--config", "config.yml", "events_demo" ]
+  rpc-demo:
+    build:
+      context: .
+      args:
+        filename: "rpc_demo.py"
+    restart: always
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq:chassis-eventbus
+    environment:
+      RABBIT_PASSWORD: "guest"
+      RABBIT_USER: "guest"
+      RABBIT_HOST: "rabbitmq"
+      RABBIT_PORT: "5672"
+      RABBIT_MANAGEMENT_PORT: "15672"
+    command: [ "nameko", "run", "--config", "config.yml", "rpc_demo" ]
+  rabbitmq:
+    image: rabbitmq:3.6-management
+    container_name: chassis-eventbus
+    ports:
+      - "5673:5672"
+      - "15673:15672"
